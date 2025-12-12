@@ -1,0 +1,56 @@
+<Window x:Class="WhatCanIDelete.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:WhatCanIDelete.ViewModels"
+        mc:Ignorable="d"
+        Title="WhatCanIDelete" Height="550" Width="900">
+  <Window.DataContext>
+    <vm:MainViewModel />
+  </Window.DataContext>
+  <DockPanel LastChildFill="True" Margin="12">
+    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+      <TextBlock Text="WhatCanIDelete" FontSize="24" FontWeight="Bold" />
+      <TextBlock Text="Analyze folders safely and decide what to clean up." Margin="0,4,0,8" />
+      <WrapPanel Margin="0,0,0,8" VerticalAlignment="Center" HorizontalAlignment="Left" ItemHeight="32">
+        <Button Content="Select Folder" Command="{Binding SelectFolderCommand}" Width="120" Margin="0,0,8,0" />
+        <Button Content="Export Report" Command="{Binding ExportReportCommand}" Width="120" IsEnabled="{Binding HasResults}" />
+        <TextBlock Text="Current folder:" VerticalAlignment="Center" Margin="16,0,4,0" />
+        <TextBlock Text="{Binding SelectedFolder}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Width="350" />
+      </WrapPanel>
+      <TextBlock Text="{Binding SummaryText}" FontStyle="Italic" Foreground="Gray" />
+      <TextBlock Text="{Binding StatusMessage}" Foreground="DarkSlateBlue" />
+    </StackPanel>
+    <DataGrid ItemsSource="{Binding AnalyzedFiles}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="0" HeadersVisibility="Column" IsReadOnly="True">
+      <DataGrid.Resources>
+        <SolidColorBrush x:Key="SafeBrush" Color="#DFF0D8" />
+        <SolidColorBrush x:Key="CarefulBrush" Color="#FEF3CD" />
+        <SolidColorBrush x:Key="DoNotBrush" Color="#F8D7DA" />
+      </DataGrid.Resources>
+      <DataGrid.RowStyle>
+        <Style TargetType="DataGridRow">
+          <Setter Property="Background" Value="White" />
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding Category}" Value="LikelySafe">
+              <Setter Property="Background" Value="{StaticResource SafeBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Category}" Value="BeCareful">
+              <Setter Property="Background" Value="{StaticResource CarefulBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Category}" Value="DoNotDelete">
+              <Setter Property="Background" Value="{StaticResource DoNotBrush}" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </DataGrid.RowStyle>
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="File" Binding="{Binding FileName}" Width="2*" />
+        <DataGridTextColumn Header="Size" Binding="{Binding SizeDescription}" Width="*" />
+        <DataGridTextColumn Header="Last Accessed" Binding="{Binding LastAccessedDescription}" Width="*" />
+        <DataGridTextColumn Header="Category" Binding="{Binding CategoryDescription}" Width="*" />
+        <DataGridTextColumn Header="Reason" Binding="{Binding Reason}" Width="2*" />
+      </DataGrid.Columns>
+    </DataGrid>
+  </DockPanel>
+</Window>
