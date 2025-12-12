@@ -1,0 +1,8 @@
+bin/
+obj/
+PublishOutput/
+*.user
+*.suo
+*.userprefs
+.vs/
+*.pdb
